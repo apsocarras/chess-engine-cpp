@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bbc_types.hpp"
-#include <algorithm>
+#include <iostream>
 #include <type_traits>
 
 template <typename BoardType>
@@ -46,7 +46,7 @@ void print_bitboard(const BitBoardView<BoardType>& bitboard) {
     // Print files 
     std::cout << "   ";
     for (int index {0}; index < N_Files; ++index) {
-        std::cout << file_chars[index];
+        std::cout << underlined_files[index];
         if (index < 7)
             std::cout << ' ';
     }   

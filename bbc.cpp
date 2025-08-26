@@ -6,6 +6,7 @@
 #include <atomic>
 #include <cstdlib>
 #include <random>
+#include <iostream>
 int main() {
     BitBoard bitboard { };
     std::default_random_engine generator; 
