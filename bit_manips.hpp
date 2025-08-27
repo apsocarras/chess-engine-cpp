@@ -6,6 +6,10 @@
 
 template <typename BoardType>
 class BitBoardView {
+    // Templatized primarily for const/non-const bit boards 
+        // decltype(auto) preserves the reference_wrapper
+        // depends on BoardType (std::bitset::reference vs std::bitset::const_reference)
+
     private: 
         std::reference_wrapper<BoardType> m_bitboard;
     public:
@@ -22,10 +26,10 @@ class BitBoardView {
                 static_cast<std::size_t>(rank * N_Ranks + file)
             ];        
         }
-        auto operator<<(std::size_t n) const -> decltype(auto) {
+        auto operator<<(std::size_t n) const -> auto {
             return m_bitboard.get() << n;
         }
-        auto operator>>(std::size_t n) const -> decltype(auto) {
+        auto operator>>(std::size_t n) const -> auto {
             return m_bitboard.get() >> n;
         }
 
@@ -38,6 +42,9 @@ class BitBoardView {
             return m_bitboard.get() >>= n;
         }
 
+        auto const& board() const {
+            return m_bitboard.get();
+        }
 };
 
 template <typename BoardType>
@@ -58,7 +65,8 @@ void print_bitboard(const BitBoardView<BoardType>& bitboard) {
             std::cout << ' ' << bitboard(rank, file);
         }   
         std::cout << '\n';         
-    }    
+    }   
+    std::cout << '\n' << "  " << "Decimal: " << bitboard.board().to_ullong() << '\n';
 }
 
 inline void print_bitboard(const BitBoard& bitboard) {
