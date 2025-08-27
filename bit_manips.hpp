@@ -48,6 +48,8 @@ class BitBoardView {
         auto& board()  {
             return m_bitboard.get();
         }
+        // pop_bit() method - use .board().flip()
+            // video: get_bit(bitboard, square) ? bitboard ^= (1ULL << e4) : ;
 };
 
 template <typename BoardType>

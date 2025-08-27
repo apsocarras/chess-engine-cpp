@@ -2,6 +2,7 @@
 #include <array>
 #include <bitset>
 #include <cstddef>
+#include <functional>
 #include <string_view>
 #include <iostream>
 #include <type_traits>
@@ -10,6 +11,11 @@
 constexpr auto N_Ranks { 8 };
 constexpr auto N_Files { 8 };
 constexpr auto N_Squares { N_Ranks * N_Files};
+
+using BitBoard = std::bitset<N_Squares>;
+
+constexpr bool EmptySquare { 0 };
+constexpr bool OccupiedSquare { 1 };
 
 constexpr std::array<char, N_Ranks> ranks {
     '1', '2', '3', '4', '5', '6', '7', '8' 
@@ -87,10 +93,27 @@ constexpr std::array<std::string_view, N_Files> underlined_files {
     "h\u0332"
 };
 
+template <typename RankFileFilter>
+constexpr BitBoard fill_bitboard(RankFileFilter filter_off) {
+    BitBoard bitboard {};
+    for (std::size_t rank{}; rank < 8; ++rank) {
+        for (std::size_t file{}; file < 8; ++file) {
+            if (!filter_off(rank, file)) {
+                auto index {rank * 8 + file};
+                bitboard.set(index);
+            }
+        }
+    }
+    return bitboard;    
+}
 
-constexpr bool EmptySquare { 0 };
-constexpr bool OccupiedSquare { 1 };
 
 
-using BitBoard = std::bitset<N_Squares>;
-
+namespace mask_constants {
+    auto not_in_A_file { fill_bitboard([](int rank, int file) { return file == 0; }) };
+    auto not_in_H_file { fill_bitboard([](int rank, int file) { return file != 7; }) };
+    auto not_in_HG_file { fill_bitboard([](int rank, int file) { return file < 6; }) };
+    auto not_AB_file { fill_bitboard([](int rank, int file) { return file > 1; }) };
+    
+    
+}
