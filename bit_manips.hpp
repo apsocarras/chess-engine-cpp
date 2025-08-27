@@ -9,22 +9,20 @@ class BitBoardView {
     // Templatized primarily for const/non-const bit boards 
         // decltype(auto) preserves the reference_wrapper
         // depends on BoardType (std::bitset::reference vs std::bitset::const_reference)
-
     private: 
         std::reference_wrapper<BoardType> m_bitboard;
     public:
         BitBoardView(BoardType& bb) : m_bitboard { bb } {};
 
+        bool operator()(Square square)  {
+            return m_bitboard.get().test(square);
+        }
         auto operator()(int rank, int file) -> decltype(auto) { 
             // Video implementation w/ shifting: bitboard & (1ULL << (rank * 8 + file))
-            return m_bitboard.get()[
-                static_cast<std::size_t>(rank * N_Ranks + file)
-            ];        
+            return m_bitboard.get().test(rank * 8 + file);
         }
-        auto operator()(int rank, int file) const -> decltype(auto)  { 
-            return m_bitboard.get()[
-                static_cast<std::size_t>(rank * N_Ranks + file)
-            ];        
+        constexpr bool operator()(int rank, int file) const { 
+            return m_bitboard.get().test(rank * 8 + file);
         }
         auto operator<<(std::size_t n) const -> auto {
             return m_bitboard.get() << n;
@@ -32,7 +30,6 @@ class BitBoardView {
         auto operator>>(std::size_t n) const -> auto {
             return m_bitboard.get() >> n;
         }
-
         auto operator<<=(std::size_t n) -> decltype(auto) {
             static_assert(!std::is_const_v<BoardType>, "Cannot shift const board in place");
             return m_bitboard.get() <<= n;
@@ -60,7 +57,7 @@ void print_bitboard(const BitBoardView<BoardType>& bitboard) {
     std::cout << '\n';
     
     for (int rank{7}; rank >= 0; --rank) {
-        std::cout << rank_chars[static_cast<std::size_t>(rank)] << '|';
+        std::cout << ranks[static_cast<std::size_t>(rank)] << '|';
         for (std::size_t file{0}; file < N_Files; ++file) {
             std::cout << ' ' << bitboard(rank, file);
         }   
