@@ -94,11 +94,11 @@ constexpr std::array<std::string_view, N_Files> underlined_files {
 };
 
 template <typename RankFileFilter>
-constexpr BitBoard fill_bitboard(RankFileFilter filter_off) {
+constexpr BitBoard fill_bitboard(RankFileFilter keep_condition) {
     BitBoard bitboard {};
     for (std::size_t rank{}; rank < 8; ++rank) {
         for (std::size_t file{}; file < 8; ++file) {
-            if (!filter_off(rank, file)) {
+            if (!keep_condition(rank, file)) {
                 auto index {rank * 8 + file};
                 bitboard.set(index);
             }
@@ -110,10 +110,8 @@ constexpr BitBoard fill_bitboard(RankFileFilter filter_off) {
 
 
 namespace mask_constants {
-    auto not_in_A_file { fill_bitboard([](int rank, int file) { return file == 0; }) };
-    auto not_in_H_file { fill_bitboard([](int rank, int file) { return file != 7; }) };
-    auto not_in_HG_file { fill_bitboard([](int rank, int file) { return file < 6; }) };
-    auto not_AB_file { fill_bitboard([](int rank, int file) { return file > 1; }) };
-    
-    
+    const auto not_A_file { fill_bitboard([](int rank, int file) { return file != 0; }) };
+    const auto not_H_file { fill_bitboard([](int rank, int file) { return file != 7; }) };
+    const auto not_HG_file { fill_bitboard([](int rank, int file) { return file < 6; }) };
+    const auto not_AB_file { fill_bitboard([](int rank, int file) { return file > 1; }) };
 }

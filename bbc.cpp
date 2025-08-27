@@ -17,6 +17,17 @@ int main() {
     // std::cout << "Square index: " << square << '\n';
     bitboard.set(square);
     print_bitboard(bitboard);
+    constexpr bool reversed { false };
+    print_squares<reversed>();
+    
+    std::cout << '\n' << "Not in A File: " << "\n\n";
+    print_bitboard(mask_constants::not_A_file);
+    std::cout << '\n' << "Not in H File: " << "\n\n"; 
+    print_bitboard(mask_constants::not_H_file);
+    std::cout << '\n' << "Not in HG File: " << "\n\n"; 
+    print_bitboard(mask_constants::not_HG_file);
+    std::cout << '\n' << "Not in AB File: " << "\n\n"; 
+    print_bitboard(mask_constants::not_AB_file);
 
-    print_squares<false>();
+
 }
