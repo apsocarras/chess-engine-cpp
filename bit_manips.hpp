@@ -14,12 +14,15 @@ class BitBoardView {
     public:
         BitBoardView(BoardType& bb) : m_bitboard { bb } {};
 
-        bool operator()(Square square)  {
+        auto operator()(Square square) -> decltype(auto)  {
+            return m_bitboard.get()[static_cast<std::size_t>(square)]; // allow assignment
+        }
+        constexpr bool operator()(Square square) const { 
             return m_bitboard.get().test(square);
         }
         auto operator()(int rank, int file) -> decltype(auto) { 
             // Video implementation w/ shifting: bitboard & (1ULL << (rank * 8 + file))
-            return m_bitboard.get().test(rank * 8 + file);
+            return m_bitboard.get()[static_cast<std::size_t>(rank * 8 + file)]; 
         }
         constexpr bool operator()(int rank, int file) const { 
             return m_bitboard.get().test(rank * 8 + file);
@@ -40,6 +43,9 @@ class BitBoardView {
         }
 
         auto const& board() const {
+            return m_bitboard.get();
+        }
+        auto& board()  {
             return m_bitboard.get();
         }
 };
