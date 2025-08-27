@@ -17,4 +17,6 @@ int main() {
     // std::cout << "Square index: " << square << '\n';
     bitboard.set(square);
     print_bitboard(bitboard);
+
+    print_squares<false>();
 }
