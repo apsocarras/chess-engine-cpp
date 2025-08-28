@@ -1,30 +1,14 @@
 #pragma once
 
 #include "board_types.hpp"
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <iostream>
 #include <type_traits>
 #include <bitset>
+
 using BitBoard = std::bitset<N_Squares>;
-
-constexpr BitBoard fill_bitboard(bool(*keep_condition)(int rank, int file)) {
-    uint64_t mask = 0;
-    for (std::size_t rank = 0; rank < 8; ++rank) {
-        for (std::size_t file = 0; file < 8; ++file) {
-            if (!keep_condition(rank, file)) {
-                auto index = rank * 8 + file;
-                mask |= (1ULL << index);
-            }
-        }
-    }
-    return BitBoard{mask};
-}
-
-namespace masks {
-    constexpr auto not_A_file { fill_bitboard([](int rank, int file) constexpr { return file != 0; }) };
-    constexpr auto not_H_file { fill_bitboard([](int rank, int file) constexpr { return file != 7; }) };
-    constexpr auto not_HG_file { fill_bitboard([](int rank, int file) constexpr { return file < 6; }) };
-    constexpr auto not_AB_file { fill_bitboard([](int rank, int file) constexpr { return file > 1; }) };
-}
 
 template <typename BoardType>
 class BitBoardView {
@@ -67,13 +51,31 @@ class BitBoardView {
         auto const& board() const {
             return m_bitboard.get();
         }
-        auto& board()  {
+        auto board() -> decltype(auto) {
             return m_bitboard.get();
         }
         // pop_bit() method - use .board().flip()
             // video: get_bit(bitboard, square) ? bitboard ^= (1ULL << e4) : ;
 
+        auto set(Square square)  {
+            auto index { static_cast<size_t>(square)};
+            m_bitboard.get().set(index);
+        }
+
 };
+
+constexpr BitBoard fill_bitboard(bool(*keep_condition)(int rank, int file)) {
+    uint64_t mask = 0;
+    for (std::size_t rank = 0; rank < 8; ++rank) {
+        for (std::size_t file = 0; file < 8; ++file) {
+            if (keep_condition(rank, file)) {
+                auto index = rank * 8 + file;
+                mask |= (1ULL << index);
+            }
+        }
+    }
+    return BitBoard{mask};
+}
 
 template <typename BoardType>
 void print_bitboard(const BitBoardView<BoardType>& bitboard) {
@@ -112,3 +114,45 @@ inline void print_bitboard() {
         std::cout << '\n';         
     }    
 }
+
+namespace masks {
+    namespace files {
+        constexpr auto not_A_file { fill_bitboard([](int rank, int file) constexpr { return file != 0; }) };
+        constexpr auto not_H_file { fill_bitboard([](int rank, int file) constexpr { return file != 7; }) };
+        constexpr auto not_HG_file { fill_bitboard([](int rank, int file) constexpr { return file < 6; }) };
+        constexpr auto not_AB_file { fill_bitboard([](int rank, int file) constexpr { return file > 1; }) };
+    }
+
+    namespace attacks { 
+        constexpr BitBoard get_pawn_attacks(Square square, Color color) {
+            BitBoard bb {1ULL << static_cast<size_t>(square)};
+            if (color == Color::white) {
+                return (bb << 7 & files::not_A_file) | (bb << 9 & files::not_H_file); 
+            } else {
+                return (bb >> 7 & files::not_A_file) | (bb >> 9 & files::not_H_file); 
+            }
+        }
+        template <size_t N>
+        constexpr std::array<BitBoard, N >get_pawn_attacks(const std::array<Square, N>& squares, Color color) { 
+            std::array<BitBoard, N> bitboards {};
+            std::transform(squares.begin(), squares.end(), bitboards.begin(),
+            [=](Square square) constexpr {
+                return get_pawn_attacks(square, color);
+            });
+            return bitboards;
+        }
+    }
+}
+namespace attack_tables {
+    constexpr std::array<std::array<BitBoard, N_Squares>, 2> pawn_attacks {
+        masks::attacks::get_pawn_attacks<N_Squares>(squares_enum, Color::white), 
+        masks::attacks::get_pawn_attacks<N_Squares>(squares_enum, Color::black)
+    };
+}
+
+
+
+            // std::transform(squares.begin(), squares.end(), bitboards.begin(),
+            //     [](Square square) constexpr {
+            //         return get_pawn_attacks<BitBoardType, color>(square);
+            //     });
