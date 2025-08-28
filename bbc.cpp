@@ -1,6 +1,3 @@
-// https://www.youtube.com/watch?v=o-ySJ2EBarY&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs&index=2
-// lightly modifying to C++
-
 #include "bitboard.hpp"
 #include "board_types.hpp"
 #include <cstdlib>
