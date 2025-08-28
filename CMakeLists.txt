@@ -5,11 +5,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(
-    bit_manips 
-    bit_manips.cpp 
-    bit_manips.hpp
-    bbc_types.hpp
+    board 
+    bitboard.hpp
+    board_types.hpp
     )
 
 add_executable(bbc bbc.cpp)
-target_link_libraries(bbc PUBLIC bit_manips)
+target_link_libraries(bbc PUBLIC board)

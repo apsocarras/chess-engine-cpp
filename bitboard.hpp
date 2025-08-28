@@ -1,8 +1,30 @@
 #pragma once
 
-#include "bbc_types.hpp"
+#include "board_types.hpp"
 #include <iostream>
 #include <type_traits>
+#include <bitset>
+using BitBoard = std::bitset<N_Squares>;
+
+constexpr BitBoard fill_bitboard(bool(*keep_condition)(int rank, int file)) {
+    uint64_t mask = 0;
+    for (std::size_t rank = 0; rank < 8; ++rank) {
+        for (std::size_t file = 0; file < 8; ++file) {
+            if (!keep_condition(rank, file)) {
+                auto index = rank * 8 + file;
+                mask |= (1ULL << index);
+            }
+        }
+    }
+    return BitBoard{mask};
+}
+
+namespace masks {
+    constexpr auto not_A_file { fill_bitboard([](int rank, int file) constexpr { return file != 0; }) };
+    constexpr auto not_H_file { fill_bitboard([](int rank, int file) constexpr { return file != 7; }) };
+    constexpr auto not_HG_file { fill_bitboard([](int rank, int file) constexpr { return file < 6; }) };
+    constexpr auto not_AB_file { fill_bitboard([](int rank, int file) constexpr { return file > 1; }) };
+}
 
 template <typename BoardType>
 class BitBoardView {
@@ -50,6 +72,7 @@ class BitBoardView {
         }
         // pop_bit() method - use .board().flip()
             // video: get_bit(bitboard, square) ? bitboard ^= (1ULL << e4) : ;
+
 };
 
 template <typename BoardType>

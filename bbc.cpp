@@ -1,12 +1,12 @@
 // https://www.youtube.com/watch?v=o-ySJ2EBarY&list=PLmN0neTso3Jxh8ZIylk74JpwfiWNI76Cs&index=2
 // lightly modifying to C++
 
-#include "bbc_types.hpp"
-#include "bit_manips.hpp"
+#include "bitboard.hpp"
 #include <atomic>
 #include <cstdlib>
 #include <random>
 #include <iostream>
+
 int main() {
     BitBoard bitboard { };
     std::default_random_engine generator(std::random_device{}()); 
@@ -21,13 +21,13 @@ int main() {
     print_squares<reversed>();
     
     std::cout << '\n' << "Not in A File: " << "\n\n";
-    print_bitboard(mask_constants::not_A_file);
+    print_bitboard(masks::not_A_file);
     std::cout << '\n' << "Not in H File: " << "\n\n"; 
-    print_bitboard(mask_constants::not_H_file);
+    print_bitboard(masks::not_H_file);
     std::cout << '\n' << "Not in HG File: " << "\n\n"; 
-    print_bitboard(mask_constants::not_HG_file);
+    print_bitboard(masks::not_HG_file);
     std::cout << '\n' << "Not in AB File: " << "\n\n"; 
-    print_bitboard(mask_constants::not_AB_file);
+    print_bitboard(masks::not_AB_file);
 
 
 }
