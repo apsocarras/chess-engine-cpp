@@ -116,14 +116,6 @@ namespace moves {
     a1, b1, c1, d1, e1, f1, g1, h1
     */
     enum class Direction : int {
-        // N=8,
-        // S=-8,
-        // E=1,
-        // W=-1,
-        // NW=7,
-        // SW=-7,
-        // NE=9, 
-        // SE=-9
         N=0,
         E=1,
         W=-1,
@@ -133,7 +125,7 @@ namespace moves {
         SW=-9,
         SE=-7
     };
-    template <Direction D, std::uint64_t Mask, typename BoardType>
+    template <Direction D, std::uint64_t Mask=0xFFFFFFFFFFFFFFFF, typename BoardType>
     constexpr BitBoard<BoardType> move(BitBoard<BoardType>& bb) {
         const auto d{ static_cast<int>(D) };
         if constexpr (d > 0) {
