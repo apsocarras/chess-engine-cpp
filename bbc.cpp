@@ -1,8 +1,12 @@
 #include "bitboard.hpp"
 #include "board_types.hpp"
+#include <algorithm>
+#include <cstdint>
 #include <cstdlib>
+#include <map>
 #include <random>
 #include <iostream>
+#include <unordered_map>
 
 
 const Square get_random_square() {
@@ -29,36 +33,56 @@ void print_mask_constants() {
 }
 
 int main() {
-    print_squares(Color::white);
-    // BitBoard bitboard { };
-    // auto view {BitBoardView<BitBoard>(bitboard)};
-    // // auto randSquare = get_random_square();
-    // auto square { Square::c3 };
-    // view.set(square);
+    // print_squares(Color::white);
+    BitBoard<uint64_t> bitboard {};
+    // auto randSquare = get_random_square();
+    auto square { Square::c3 };
+    bitboard.set(square);
     
+    // std::cout << '\n';
     // std::cout << "Reference Bitboard: " << '\n';
-    // print_bitboard(view);
+    // print_bitboard(bitboard);
     // std::cout << '\n';
     // std::cout << '\n';
 
-    // // print_mask_constants();
+    // print_mask_constants();
 
     
-    // // BitBoard seven{((bitboard << 7))};
-    // // BitBoard nine{((bitboard << 9))};
-    // // BitBoard mask { seven | nine | bitboard };
-    // // print_bitboard(mask);
+    // BitBoard seven{((bitboard << 7))};
+    // BitBoard nine{((bitboard << 9))};
+    // BitBoard mask { seven | nine | bitboard };
+    // std::cout << '\n' << "See attacks NW, NE";
+    // print_bitboard(mask);
 
-    // // BitBoard attacks {};
-    // // print_bitboard(bitboard_constants::masks::not_A_file);
-    // // attacks |= ((bitboard << 7));
-    // // print_bitboard(attacks);
+    // BitBoard<uint64_t> attacks {};
+    // print_bitboard(masks::files::not_A_file);
+    // attacks |= ((bitboard << 7));
+    // print_bitboard(attacks);
+    using namespace moves;
+    using enum Direction;
+    using namespace masks;
+    print_bitboard(bitboard);
+    std::map<std::string_view, BitBoard<std::uint64_t>> moves {
+    { "West", move<W, 0xFFFFFFFFFFFFFFFF>(bitboard) },
+    {"East", move<E, 0xFFFFFFFFFFFFFFFF>(bitboard)},
+    {"NW", move<NW, 0xFFFFFFFFFFFFFFFF>(bitboard)},
+    {"NE", move<NE, 0xFFFFFFFFFFFFFFFF>(bitboard)},    
+    // {"SW", move<SW, 0xFFFFFFFFFFFFFFFF>(bitboard)},    
+    // {"SE", move<SE, 0xFFFFFFFFFFFFFFFF>(bitboard)},  
+    // {"S", move<S, 0xFFFFFFFFFFFFFFFF>(bitboard)},    
 
-    
+    };
+    for (auto & [dir, bb] : moves) {
+        std::cout << dir << '\n'; 
+        bb.set(square);
+        print_bitboard(bb);
+    }
+   
     
     // auto white_attacks { masks::attacks::get_pawn_attacks(square, Color::white)};
-    // auto black_attacks { masks::attacks::get_pawn_attacks(square, Color::black)};
-    // print_bitboard(white_attacks);
-    // print_bitboard(black_attacks);
+    // // auto black_attacks { masks::attacks::get_pawn_attacks(square, Color::black)};
+    // auto white{BitBoard(white_attacks)};
+    // print_bitboard(white);
+    // print_bitboard(bitboard << 1);
 
 }
