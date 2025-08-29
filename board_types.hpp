@@ -1,9 +1,16 @@
 #pragma once
+#include <algorithm>
 #include <array>
 #include <cstddef>
+#include <ranges>
 #include <string_view>
 #include <iostream>
 // using BitBoard = std::bitset<sizeof(unsigned long long)>; // think this uses size of a pointer to unsigned long long
+
+
+enum class Color {
+    white, black
+};
 
 constexpr auto N_Ranks { 8ULL };
 constexpr auto N_Files { 8ULL };
@@ -12,10 +19,10 @@ constexpr auto N_Squares { N_Ranks * N_Files};
 constexpr bool EmptySquare { 0 };
 constexpr bool OccupiedSquare { 1 };
 
-constexpr std::array<char, N_Ranks> ranks {
+constexpr std::array<char, N_Ranks> rank_chars {
     '1', '2', '3', '4', '5', '6', '7', '8' 
 };
-constexpr std::array<char, static_cast<size_t>(N_Files)> files {
+constexpr std::array<char, static_cast<size_t>(N_Files)> file_chars {
      'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
 };
 constexpr std::array<std::string_view, N_Files> underlined_files {
@@ -28,6 +35,7 @@ constexpr std::array<std::string_view, N_Files> underlined_files {
     "g\u0332",
     "h\u0332"
 };
+
 
 enum class Square : std::size_t {
     a1, a2, a3, a4, a5, a6, a7, a8,
@@ -45,25 +53,25 @@ constexpr Square make_square(int rank, int file) {
     return static_cast<Square>(rank * 8 + file);
 }
 
-template<bool reversed>
-constexpr void print_squares() {
-    // Prints the squares based on the files nad then numbers 1 through 8. 
+void print_squares(Color perspective) {
+    // Prints the squares based on the files and then numbers 1 through 8. 
     // Used to generate the square array 
-    auto print_rows {
+    auto print_ranks {
         [](auto begin, auto end){
-            std::ranges::for_each(begin, end, [](const char& c){
-                for (int i{1}; i <= 8; ++i) {
-                    std::cout << c << i;
-                    if (i != 8) std::cout <<',' << ' ';
+            std::ranges::for_each(begin, end, [](const char rc) constexpr {
+                for (const auto& fc : file_chars) {
+                    std::cout << fc << rc;
+                    if (fc != 'h') std::cout <<',' << ' ';
                 }
                 std::cout << '\n';
             });
         }
     };
-    if constexpr (reversed) {
-        print_rows(files.rbegin(), files.rend());
+    
+    if (perspective == Color::white) {
+        print_ranks(rank_chars.rbegin(), rank_chars.rend());
     } else {
-        print_rows(files.begin(), files.end());
+        print_ranks(rank_chars.begin(), rank_chars.end());
     }
 };
 
@@ -93,12 +101,8 @@ constexpr std::string_view to_string(Square square) {
     return squares[static_cast<std::size_t>(square)];
 }
 constexpr char char_rank(int rank) {
-    return ranks[static_cast<std::size_t>(rank)];
+    return rank_chars[static_cast<std::size_t>(rank)];
 }
 constexpr char char_file(int file) {
-    return files[static_cast<std::size_t>(file)];
+    return file_chars[static_cast<std::size_t>(file)];
 }
-
-enum class Color {
-    white, black
-};

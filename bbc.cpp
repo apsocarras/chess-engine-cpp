@@ -29,36 +29,36 @@ void print_mask_constants() {
 }
 
 int main() {
-    // print_squares<reversed>();
-    BitBoard bitboard { };
-    auto view {BitBoardView<BitBoard>(bitboard)};
-    // auto randSquare = get_random_square();
-    auto square { Square::c3 };
-    view.set(square);
+    print_squares(Color::white);
+    // BitBoard bitboard { };
+    // auto view {BitBoardView<BitBoard>(bitboard)};
+    // // auto randSquare = get_random_square();
+    // auto square { Square::c3 };
+    // view.set(square);
     
-    std::cout << "Reference Bitboard: " << '\n';
-    print_bitboard(view);
-    std::cout << '\n';
-    std::cout << '\n';
+    // std::cout << "Reference Bitboard: " << '\n';
+    // print_bitboard(view);
+    // std::cout << '\n';
+    // std::cout << '\n';
 
-    // print_mask_constants();
-
-    
-    // BitBoard seven{((bitboard << 7))};
-    // BitBoard nine{((bitboard << 9))};
-    // BitBoard mask { seven | nine | bitboard };
-    // print_bitboard(mask);
-
-    // BitBoard attacks {};
-    // print_bitboard(bitboard_constants::masks::not_A_file);
-    // attacks |= ((bitboard << 7));
-    // print_bitboard(attacks);
+    // // print_mask_constants();
 
     
+    // // BitBoard seven{((bitboard << 7))};
+    // // BitBoard nine{((bitboard << 9))};
+    // // BitBoard mask { seven | nine | bitboard };
+    // // print_bitboard(mask);
+
+    // // BitBoard attacks {};
+    // // print_bitboard(bitboard_constants::masks::not_A_file);
+    // // attacks |= ((bitboard << 7));
+    // // print_bitboard(attacks);
+
     
-    auto white_attacks { masks::attacks::get_pawn_attacks(square, Color::white)};
-    auto black_attacks { masks::attacks::get_pawn_attacks(square, Color::black)};
-    print_bitboard(white_attacks);
-    print_bitboard(black_attacks);
+    
+    // auto white_attacks { masks::attacks::get_pawn_attacks(square, Color::white)};
+    // auto black_attacks { masks::attacks::get_pawn_attacks(square, Color::black)};
+    // print_bitboard(white_attacks);
+    // print_bitboard(black_attacks);
 
 }

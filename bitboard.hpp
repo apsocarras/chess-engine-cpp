@@ -65,6 +65,7 @@ class BitBoardView {
 };
 
 constexpr BitBoard fill_bitboard(bool(*keep_condition)(int rank, int file)) {
+    // Using to precreate mask constants. Fine if unnecessarily checking all files in skipped ranks.
     uint64_t mask = 0;
     for (std::size_t rank = 0; rank < 8; ++rank) {
         for (std::size_t file = 0; file < 8; ++file) {
@@ -90,7 +91,7 @@ void print_bitboard(const BitBoardView<BoardType>& bitboard) {
     std::cout << '\n';
     
     for (int rank{7}; rank >= 0; --rank) {
-        std::cout << ranks[static_cast<std::size_t>(rank)] << '|';
+        std::cout << rank_chars[static_cast<std::size_t>(rank)] << '|';
         for (std::size_t file{0}; file < N_Files; ++file) {
             std::cout << ' ' << bitboard(rank, file);
         }   
@@ -115,12 +116,29 @@ inline void print_bitboard() {
     }    
 }
 
+namespace moves {
+    /*
+        ^ 
+      <   >
+        v
+    */
+
+    
+}
+
 namespace masks {
     namespace files {
         constexpr auto not_A_file { fill_bitboard([](int rank, int file) constexpr { return file != 0; }) };
         constexpr auto not_H_file { fill_bitboard([](int rank, int file) constexpr { return file != 7; }) };
         constexpr auto not_HG_file { fill_bitboard([](int rank, int file) constexpr { return file < 6; }) };
         constexpr auto not_AB_file { fill_bitboard([](int rank, int file) constexpr { return file > 1; }) };
+    }
+
+    namespace ranks {
+        constexpr auto not_1st_rank { fill_bitboard([](int rank, int file) constexpr { return rank != 0; }) };
+        constexpr auto not_8th_rank { fill_bitboard([](int rank, int file) constexpr { return rank != 7; }) };
+        constexpr auto not_1st2ndrank { fill_bitboard([](int rank, int file) constexpr { return rank > 1; }) };
+        constexpr auto not_7th8th_rank { fill_bitboard([](int rank, int file) constexpr { return rank < 6; }) };
     }
 
     namespace attacks { 
