@@ -137,10 +137,8 @@ namespace moves {
     constexpr BitBoard<BoardType> move(BitBoard<BoardType>& bb) {
         const auto d{ static_cast<int>(D) };
         if constexpr (d > 0) {
-            auto foo { (d & Mask)};
             return bb << (d & Mask);
         } else {
-            auto foo { (-d) & Mask };
             return bb >> ((-d) & Mask);
         }
     }
